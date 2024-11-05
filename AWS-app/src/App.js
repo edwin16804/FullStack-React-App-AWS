@@ -1,8 +1,10 @@
 // App.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import BuyShoes from './components/BuyShoes';
 import CheckOrders from './components/CheckOrders';
 import './App.css'; // Link the CSS file
+import axios from "axios";
+
 
 const App = () => {
   const [view, setView] = useState(null);

@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start":"node index",
+    "start": "node index",
     "dev": "DEVELOPMENT=true nodemon index"
   },
-  "type":"module",
+  "type": "module",
   "author": "",
   "license": "ISC",
   "description": "",
