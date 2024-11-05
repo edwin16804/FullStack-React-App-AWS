@@ -1,0 +1,110 @@
+.check-orders {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: black;
+    color: white;
+    opacity: 0.8;
+    width: 100%;
+    margin: 0 auto;
+    border-radius: 10px;
+  }
+  
+  .check-orders h2 {
+    font-size: 2em;
+    margin-bottom: 20px;
+    color: white;
+  }
+  .header {
+    display: flex;
+    align-items: center;
+    gap:42%;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  .header h1{
+    font-size: 50px;
+  }
+  
+  .check-orders form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .check-orders form label {
+    font-size: 18px;
+    color: white;
+    margin-bottom: 10px;
+  }
+  
+  .check-orders form input[type="text"] {
+    padding: 8px;
+    font-size: 16px;
+    width: 200px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-top: 5px;
+  }
+  
+  .check-orders form input[type="submit"] {
+    background-color: white;
+    color: black;
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: background-color 0.3s;
+  }
+  
+  .check-orders form input[type="submit"]:hover {
+    background-color: #ddd;
+  }
+  
+  .orders-table {
+    margin-top: 20px;
+    width: 100%;
+  }
+  
+  .orders-table table {
+    width: 100%;
+    border-collapse: collapse;
+    color: white;
+  }
+  
+  .orders-table th, .orders-table td {
+    padding: 12px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+  }
+  
+  .orders-table th {
+    background-color: #444;
+    color: white;
+    text-transform: uppercase;
+  }
+  
+  .orders-table td {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .orders-table button {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+  }
+  
+  .orders-table button:hover {
+    background-color: darkred;
+  }
+  

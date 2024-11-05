@@ -1,0 +1,137 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: black;
+  opacity: 0.8;
+  padding: 2%;
+  background-attachment: fixed;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap:40%;
+  width: 100%;
+  margin-bottom: 20px;
+}
+.header h1{
+  font-size: 50px;
+}
+
+.back-btn{
+  background:black;
+  border:none;
+  color:white;
+  cursor: pointer;
+}
+
+
+.shoe-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 2%;
+}
+
+.shoe-item {
+  list-style: none;
+  cursor: pointer;
+  padding: 10px;
+  margin: 5px;
+  width: 22%;
+  border-radius: 5px;
+  border: 2px solid white;
+  text-align: center;
+  font-size: x-large;
+}
+
+.shoe-item img {
+  object-fit: cover;
+  width: 100%;
+  height: 80%;
+}
+
+.selected {
+  color: white;
+  font-size: x-large; 
+  border-color: rgb(0, 225, 255);
+}
+
+.not-selected {
+  color: white;
+}
+
+.shoe-item p {
+  display: none;
+}
+
+.selected p {
+  display: block;
+}
+
+form {
+  background-color: #222; /* Dark background for contrast */
+  padding: 20px;
+  margin-top: 20px;
+  border-radius: 8px;
+  width: 100%;
+  margin: 20px auto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2); /* Add a subtle shadow */
+}
+
+form label {
+  font-size: 18px;
+  color: #ddd; /* Softer white for labels */
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+form input,
+form textarea {
+  padding: 10px;
+  font-size: 16px;
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 5px;
+  border: 1px solid #555; /* Darker border for a sleeker look */
+  background-color: #333;
+  color: white;
+  margin-bottom: 15px; /* Add spacing between inputs */
+}
+
+form input::placeholder,
+form textarea::placeholder {
+  color: #aaa; /* Subtle placeholder color */
+}
+
+form input[type="number"],
+form input[type="tel"],
+form input[type="email"],
+form input[type="text"] {
+  max-width: 100%; /* Ensure inputs span the width */
+}
+
+form textarea {
+  resize: vertical; /* Allow resizing only vertically */
+}
+
+.submit-btn {
+  background-color: #fff;
+  color: black;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  font-size: larger;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.submit-btn:hover {
+  background-color: #ddd; /* Lighter hover effect */
+}

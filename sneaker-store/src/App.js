@@ -1,25 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+// App.js
+import React, { useState } from 'react';
+import BuyShoes from './components/BuyShoes';
+import CheckOrders from './components/CheckOrders';
+import './App.css'; // Link the CSS file
 
-function App() {
+const App = () => {
+  const [view, setView] = useState(null);
+
+  const handleViewChange = (viewType) => {
+    setView(viewType);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      {!view && (
+        <div id="start">
+          <center>
+            <h1>SNEAKER STORE</h1>
+            <button className="see-btn" onClick={() => handleViewChange('buy')}>See Collection</button>
+            <button className="check-btn" onClick={() => handleViewChange('orders')}>Check Orders</button>
+          </center>
+        </div>
+      )}
+      {view === 'buy' && <BuyShoes goBack={() => setView(null)} />}
+      {view === 'orders' && <CheckOrders goBack={() => setView(null)} />}
     </div>
   );
-}
+};
 
 export default App;
+
