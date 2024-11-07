@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import "./BuyShoes.css";
+import { API_URL } from "../utils.js";
 
 const shoesData = [
   { name: 'Airmax', imgSrc: 'https://edwin01.s3.ap-south-1.amazonaws.com/airmax.jpg', price: 16000 },
@@ -15,12 +17,14 @@ const BuyShoes = ({ goBack }) => {
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
+    email: '',
+    zipcode: '',
     address: ''
   });
 
   const handleSelectShoe = (shoe) => {
     setSelectedShoe(shoe);
-    setIsBuying(false); // Reset buy form when selecting a new shoe
+    setIsBuying(false);
   };
 
   const handleInputChange = (e) => {
@@ -31,25 +35,33 @@ const BuyShoes = ({ goBack }) => {
     setIsBuying(true);
   };
 
+  const submitOrder = async () => {
+    try {
+      await axios.post(API_URL, {
+        shoe: selectedShoe.name,
+        quantity,
+        ...formData
+      });
+      alert('Order placed successfully!');
+    } catch (error) {
+      console.error('Error placing order:', error);
+      alert('Failed to place order. Please try again.');
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission (e.g., send data to backend)
-    console.log('Order details:', {
-      selectedShoe,
-      quantity,
-      ...formData
-    });
-    alert('Order placed successfully!');
+    submitOrder();
     setSelectedShoe(null);
     setQuantity(1);
     setFormData({
       name: '',
       phone: '',
-      email:'',
-      zipcode:'',
+      email: '',
+      zipcode: '',
       address: ''
     });
-    setIsBuying(false); // Reset form after submission
+    setIsBuying(false);
   };
 
   return (
@@ -133,7 +145,7 @@ const BuyShoes = ({ goBack }) => {
                 required
               />
             </div>
-            <button type="submit" className='submit-btn'>Submit Order</button>
+            <button type="submit" className="submit-btn">Submit Order</button>
           </form>
         )}
       </center>
