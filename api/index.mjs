@@ -1,4 +1,3 @@
-
 import express from "express";
 import serverless from "serverless-http";
 import cors from "cors";
@@ -6,7 +5,6 @@ import { fetchOrders, cancelOrders, modifyOrders, placeOrders } from './Buy.js';
 
 const app = express();
 const port = 3001;
-
 
 app.use(express.json());
 
@@ -21,7 +19,6 @@ app.get("/", (req, res) => {
 app.get("/store", async (req, res) => {
   try {
     const tasks = await fetchOrders();
-
     res.send(tasks.Items);
   } catch (err) {
     res.status(400).send(`Error fetching orders: ${err}`);
@@ -31,9 +28,7 @@ app.get("/store", async (req, res) => {
 app.post("/store", async (req, res) => {
   try {
     const task = req.body;
-
     const response = await placeOrders(task);
-
     res.send(response);
   } catch (err) {
     res.status(400).send(`Error placing order: ${err}`);
@@ -43,9 +38,7 @@ app.post("/store", async (req, res) => {
 app.put("/store", async (req, res) => {
   try {
     const task = req.body;
-
     const response = await modifyOrders(task);
-
     res.send(response);
   } catch (err) {
     res.status(400).send(`Error updating order: ${err}`);
@@ -55,9 +48,7 @@ app.put("/store", async (req, res) => {
 app.delete("/store/:order_id", async (req, res) => {
   try {
     const { order_id } = req.params;
-
     const response = await cancelOrders(order_id);
-
     res.send(response);
   } catch (err) {
     res.status(400).send(`Error cancelling order: ${err}`);
@@ -70,4 +61,10 @@ if (process.env.DEVELOPMENT) {
   });
 }
 
-export const handler = serverless(app);
+// Export the handler in the requested format
+export const handler = async (event, context) => {
+  console.log("EVENT: \n" + JSON.stringify(event, null, 2));
+  const serverlessHandler = serverless(app);
+  const response = await serverlessHandler(event, context);
+  return response;
+};
