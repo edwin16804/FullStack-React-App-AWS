@@ -8,8 +8,7 @@ const CheckOrders = ({ goBack }) => {
 
   const handleCheckOrders = (event) => {
     event.preventDefault();
-    // Logic to fetch orders based on phone number
-    // setOrders(fetchedOrders);
+    
   };
 
   return (

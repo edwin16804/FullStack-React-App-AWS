@@ -63,6 +63,7 @@ const BuyShoes = ({ goBack }) => {
     });
     setIsBuying(false);
   };
+  
 
   return (
     <div className="main">
