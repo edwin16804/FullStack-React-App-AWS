@@ -29,29 +29,39 @@ const BuyShoes = ({ goBack }) => {
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+
   };
 
   const handleBuyNow = () => {
     setIsBuying(true);
   };
-
+  const handleQuantityChange = (e) => {
+    setQuantity(parseInt(e.target.value, 10));
+  };
   const submitOrder = async () => {
     try {
-      await axios.post(API_URL, {
-        shoe: selectedShoe.name,
-        quantity,
-        ...formData
-      });
-      alert('Order placed successfully!');
+        const response = await axios.post(API_URL, {
+            shoe: selectedShoe.name,
+            quantity,
+            ...formData
+        }, { 
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        
+        console.log(response);
+       
     } catch (error) {
-      console.error('Error placing order:', error);
-      alert('Failed to place order. Please try again.');
+        console.error('Error placing order:', error);
+        alert('Failed to place order. Please try again.');
     }
-  };
+};
+
+    
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    submitOrder();
     setSelectedShoe(null);
     setQuantity(1);
     setFormData({
@@ -62,6 +72,8 @@ const BuyShoes = ({ goBack }) => {
       address: ''
     });
     setIsBuying(false);
+    submitOrder()
+    
   };
   
 
@@ -89,7 +101,8 @@ const BuyShoes = ({ goBack }) => {
               type="number"
               min="1"
               value={quantity}
-              onChange={(e) => setQuantity(e.target.value)}
+              
+              onChange={handleQuantityChange}
             />
             <h2>Total price: Rs. {selectedShoe.price * quantity}</h2>
             <button onClick={handleBuyNow}>Buy now</button>
