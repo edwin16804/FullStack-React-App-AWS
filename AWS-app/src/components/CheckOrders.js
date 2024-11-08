@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './CheckOrders.css';
 import CancelIcon from '@mui/icons-material/Cancel';
+import AutoFixNormalIcon from '@mui/icons-material/AutoFixNormal';
 
 const CheckOrders = ({ goBack }) => {
   const [orders, setOrders] = useState([]);
@@ -25,6 +26,21 @@ const CheckOrders = ({ goBack }) => {
       setOrders([]);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Function to cancel an order
+  const cancelOrder = async (orderId) => {
+    try {
+      const response = await axios.delete(`https://gkl03cf29f.execute-api.us-east-1.amazonaws.com/stage1/delete-order/${orderId}`);
+      console.log("Order Canceled:", response.data); // Log the cancel response
+
+      // Remove the canceled order from the state
+      setOrders((prevOrders) => prevOrders.filter((order) => order.orderId !== orderId));
+      setMessage('Order canceled successfully');
+    } catch (error) {
+      console.error(error);
+      setMessage('Failed to cancel order');
     }
   };
 
@@ -53,9 +69,9 @@ const CheckOrders = ({ goBack }) => {
         </button>
       </div>
 
-      {/* Error Message */}
+      {/* Error or Success Message */}
       {message && (
-        <p style={{ color: 'red', textAlign: 'center' }}>{message}</p>
+        <p style={{ color: message.includes('Failed') ? 'red' : 'green', textAlign: 'center' }}>{message}</p>
       )}
 
       {/* Orders Table */}
@@ -85,17 +101,31 @@ const CheckOrders = ({ goBack }) => {
                   <td>{order.quantity}</td>
                   <td>${order.totalPrice}</td>
                   <td>
-                  <button
+                    <button
+                      onClick={() => cancelOrder(order.orderId)} // Call cancelOrder function with orderId
                       style={{
                         padding: '6px 12px',
                         backgroundColor: '#ff4444',
                         color: 'white',
                         border: 'none',
                         borderRadius: '4px',
-                        cursor: 'pointer'
+                        cursor: 'pointer',
+                        marginRight: '5px'
                       }}
                     >
                       <CancelIcon />
+                    </button>
+                    <button
+                      style={{
+                        padding: '6px 12px',
+                        backgroundColor: 'green',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '4px',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      <AutoFixNormalIcon />
                     </button>
                   </td>
                 </tr>
