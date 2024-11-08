@@ -10,6 +10,16 @@ const shoesData = [
   { name: 'AJ Legacy 312', imgSrc: 'https://edwin01.s3.ap-south-1.amazonaws.com/legacy.avif', price: 25000 }
 ];
 
+// PopupMessage Component
+const PopupMessage = ({ message, onClose }) => (
+  <div className="popup">
+    <div className="popup-content">
+      <p>{message}</p>
+      <button onClick={onClose}>Close</button>
+    </div>
+  </div>
+);
+
 const BuyShoes = ({ goBack }) => {
   const [selectedShoe, setSelectedShoe] = useState(null);
   const [quantity, setQuantity] = useState(1);
@@ -21,6 +31,8 @@ const BuyShoes = ({ goBack }) => {
     zipcode: '',
     address: ''
   });
+  const [message, setMessage] = useState('');
+  const [showPopup, setShowPopup] = useState(false); // State to control popup visibility
 
   const handleSelectShoe = (shoe) => {
     setSelectedShoe(shoe);
@@ -29,53 +41,43 @@ const BuyShoes = ({ goBack }) => {
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-
   };
 
   const handleBuyNow = () => {
     setIsBuying(true);
   };
+
   const handleQuantityChange = (e) => {
     setQuantity(parseInt(e.target.value, 10));
   };
-  const submitOrder = async () => {
-    try {
-        const response = await axios.post(API_URL, {
-            shoe: selectedShoe.name,
-            quantity,
-            ...formData
-        }, { 
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        });
-        
-        console.log(response);
-       
-    } catch (error) {
-        console.error('Error placing order:', error);
-        alert('Failed to place order. Please try again.');
-    }
-};
 
-    
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSelectedShoe(null);
-    setQuantity(1);
-    setFormData({
-      name: '',
-      phone: '',
-      email: '',
-      zipcode: '',
-      address: ''
-    });
-    setIsBuying(false);
-    submitOrder()
-    
+    if (!selectedShoe) return;
+
+    const orderData = {
+      shoe: selectedShoe.name,
+      quantity: quantity,
+      price: selectedShoe.price,
+      ...formData
+    };
+
+    try {
+      const response = await axios.post(`${API_URL}/placeOrder`, orderData);
+      setMessage(response.data.message || "Order placed successfully!");
+      setShowPopup(true); // Show popup on successful order
+      setIsBuying(false); // Collapse the form
+      setSelectedShoe(null); // Deselect the shoe
+    } catch (error) {
+      console.error("Error placing order:", error);
+      setMessage("Failed to place order. Please try again.");
+    }
   };
-  
+
+  const closePopup = () => {
+    setShowPopup(false);
+    setMessage(''); // Clear the message after closing the popup
+  };
 
   return (
     <div className="main">
@@ -101,7 +103,6 @@ const BuyShoes = ({ goBack }) => {
               type="number"
               min="1"
               value={quantity}
-              
               onChange={handleQuantityChange}
             />
             <h2>Total price: Rs. {selectedShoe.price * quantity}</h2>
@@ -109,7 +110,7 @@ const BuyShoes = ({ goBack }) => {
           </>
         )}
         {isBuying && (
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit}> 
             <div>
               <label htmlFor="name">Name </label>
               <input
@@ -162,6 +163,7 @@ const BuyShoes = ({ goBack }) => {
             <button type="submit" className="submit-btn">Submit Order</button>
           </form>
         )}
+        {showPopup && <PopupMessage message={message} onClose={closePopup} />} {/* Display popup */}
       </center>
     </div>
   );
