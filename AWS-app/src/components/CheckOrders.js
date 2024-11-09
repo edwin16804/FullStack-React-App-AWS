@@ -32,9 +32,12 @@ const CheckOrders = ({ goBack }) => {
   // Function to cancel an order
   const cancelOrder = async (orderId) => {
     try {
-      const response = await axios.delete(`https://gkl03cf29f.execute-api.us-east-1.amazonaws.com/stage1/delete-order/${orderId}`);
+      // Use the orderId in the path parameter
+      const response = await axios.delete(
+        `https://gkl03cf29f.execute-api.us-east-1.amazonaws.com/stage1/delete-order/${orderId}` // Pass orderId in the URL path
+      );
       console.log("Order Canceled:", response.data); // Log the cancel response
-
+  
       // Remove the canceled order from the state
       setOrders((prevOrders) => prevOrders.filter((order) => order.orderId !== orderId));
       setMessage('Order canceled successfully');
@@ -43,7 +46,7 @@ const CheckOrders = ({ goBack }) => {
       setMessage('Failed to cancel order');
     }
   };
-
+  
   return (
     <div className="check-orders">
       <div className="header">
