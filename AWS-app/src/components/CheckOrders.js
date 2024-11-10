@@ -43,9 +43,14 @@ const CheckOrders = ({ goBack }) => {
 
   const modifyOrder = async (orderId) => {
     try {
+      
+      const editnew = {
+        name: editData.name,
+        phone: editData.phoneNumber,
+      };
       const response = await axios.put(
         `https://gkl03cf29f.execute-api.us-east-1.amazonaws.com/stage1/modify-order/${orderId}`,
-        editData
+        editnew
       );
       setOrders((prevOrders) =>
         prevOrders.map((order) =>
