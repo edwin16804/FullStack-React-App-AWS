@@ -6,6 +6,8 @@ import AutoFixNormalIcon from '@mui/icons-material/AutoFixNormal';
 
 const CheckOrders = ({ goBack }) => {
   const [orders, setOrders] = useState([]);
+  const [editOrderId, setEditOrderId] = useState(null); // Track which order is being edited
+  const [editData, setEditData] = useState({});
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(true);
 
@@ -17,7 +19,6 @@ const CheckOrders = ({ goBack }) => {
     try {
       setLoading(true);
       const response = await axios.get('https://gkl03cf29f.execute-api.us-east-1.amazonaws.com/stage1/check-orders');
-      console.log("Fetched Orders:", response.data); // Log the response data
       setOrders(response.data);
       setMessage('');
     } catch (error) {
@@ -29,16 +30,9 @@ const CheckOrders = ({ goBack }) => {
     }
   };
 
-  // Function to cancel an order
   const cancelOrder = async (orderId) => {
     try {
-      // Use the orderId in the path parameter
-      const response = await axios.delete(
-        `https://gkl03cf29f.execute-api.us-east-1.amazonaws.com/stage1/delete-order/${orderId}` // Pass orderId in the URL path
-      );
-      console.log("Order Canceled:", response.data); // Log the cancel response
-  
-      // Remove the canceled order from the state
+      await axios.delete(`https://gkl03cf29f.execute-api.us-east-1.amazonaws.com/stage1/delete-order/${orderId}`);
       setOrders((prevOrders) => prevOrders.filter((order) => order.orderId !== orderId));
       setMessage('Order canceled successfully');
     } catch (error) {
@@ -46,7 +40,26 @@ const CheckOrders = ({ goBack }) => {
       setMessage('Failed to cancel order');
     }
   };
-  
+
+  const modifyOrder = async (orderId) => {
+    try {
+      const response = await axios.put(
+        `https://gkl03cf29f.execute-api.us-east-1.amazonaws.com/stage1/modify-order/${orderId}`,
+        editData
+      );
+      setOrders((prevOrders) =>
+        prevOrders.map((order) =>
+          order.orderId === orderId ? { ...order, ...editData } : order
+        )
+      );
+      setMessage('Order updated successfully');
+      setEditOrderId(null); // Close edit form
+    } catch (error) {
+      console.error(error);
+      setMessage('Failed to update order');
+    }
+  };
+
   return (
     <div className="check-orders">
       <div className="header">
@@ -54,35 +67,19 @@ const CheckOrders = ({ goBack }) => {
         <h1>All Orders</h1>
       </div>
 
-      {/* Refresh Button */}
       <div style={{ textAlign: 'center', margin: '20px 0' }}>
-        <button 
-          onClick={fetchOrders}
-          style={{
-            padding: '8px 16px',
-            backgroundColor: loading ? 'grey' : 'white',
-            color: 'black',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: loading ? 'not-allowed' : 'pointer'
-          }}
-          disabled={loading}
-        >
+        <button onClick={fetchOrders} disabled={loading}>
           {loading ? 'Loading...' : 'Refresh Orders'}
         </button>
       </div>
 
-      {/* Error or Success Message */}
-      {message && (
-        <p style={{ color: message.includes('Failed') ? 'red' : 'green', textAlign: 'center' }}>{message}</p>
-      )}
+      {message && <p style={{ color: message.includes('Failed') ? 'red' : 'green', textAlign: 'center' }}>{message}</p>}
 
-      {/* Orders Table */}
       <div className="orders-table">
         {loading ? (
-          <p style={{ textAlign: 'center' }}>Loading orders...</p>
+          <p>Loading orders...</p>
         ) : orders.length > 0 ? (
-          <table style={{ width: '100%', textAlign: 'center', border: '1px solid #ccc' }}>
+          <table>
             <thead>
               <tr>
                 <th>Order ID</th>
@@ -95,48 +92,70 @@ const CheckOrders = ({ goBack }) => {
               </tr>
             </thead>
             <tbody>
-              {orders.map((order, index) => (
-                <tr key={index}>
+              {orders.map((order) => (
+                <tr key={order.orderId}>
                   <td>{order.orderId}</td>
-                  <td>{order.name}</td> 
-                  <td>{order.phoneNumber}</td>
+                  <td>{editOrderId === order.orderId ? (
+                    <input
+                      type="text"
+                      value={editData.name || ''}
+                      onChange={(e) => setEditData({ ...editData, name: e.target.value })}
+                    />
+                  ) : (
+                    order.name
+                  )}</td>
+                  <td>{editOrderId === order.orderId ? (
+                    <input
+                      type="text"
+                      value={editData.phoneNumber || ''}
+                      onChange={(e) => setEditData({ ...editData, phoneNumber: e.target.value })}
+                    />
+                  ) : (
+                    order.phoneNumber
+                  )}</td>
                   <td>{order.shoe}</td>
                   <td>{order.quantity}</td>
                   <td>${order.totalPrice}</td>
                   <td>
-                    <button
-                      onClick={() => cancelOrder(order.orderId)} // Call cancelOrder function with orderId
-                      style={{
-                        padding: '6px 12px',
-                        backgroundColor: '#ff4444',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: 'pointer',
-                        marginRight: '5px'
-                      }}
-                    >
-                      <CancelIcon />
-                    </button>
-                    <button
-                      style={{
-                        padding: '6px 12px',
-                        backgroundColor: 'green',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      <AutoFixNormalIcon />
-                    </button>
+                    {editOrderId === order.orderId ? (
+                      <>
+                        <button onClick={() => modifyOrder(order.orderId)} style={{marginRight:'5px', backgroundColor: 'green'}}>Save</button>
+                        <button onClick={() => setEditOrderId(null)}>Cancel</button>
+                      </>
+                    ) : (
+                      <>
+                        <button onClick={() => setEditOrderId(order.orderId) || setEditData(order)}
+                          style={{
+                            padding: '6px 12px',
+                            backgroundColor: 'green',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '4px',
+                            cursor: 'pointer',
+                            marginRight:'10px'
+                          }}>
+                          <AutoFixNormalIcon />
+                        </button>
+                        <button onClick={() => cancelOrder(order.orderId)}
+                          style={{
+                            padding: '6px 12px',
+                            backgroundColor: 'red',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '4px',
+                            cursor: 'pointer'
+                          }}>
+                          <CancelIcon />
+                        </button>
+                      </>
+                    )}
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         ) : (
-          <p style={{ textAlign: 'center' }}>No orders found.</p>
+          <p>No orders found.</p>
         )}
       </div>
     </div>
